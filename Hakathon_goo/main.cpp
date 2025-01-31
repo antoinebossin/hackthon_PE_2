@@ -38,11 +38,17 @@ int main(int argc, char* argv[]) {
 
     // Création du world
     std::vector<Goo> world;
-    Goo goo1(450, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
-    world.push_back(goo1);
+    Goo goo1(250, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
     Goo goo2(350, 200, -1, 1);
+    Goo goo3(100,400,0.5,-1);
+    world.push_back(goo1);
     world.push_back(goo2);
-    
+    world.push_back(goo3);
+    world[0].neighbors={&(world[1])};
+    world[1].neighbors={&(world[0])};
+    world[0].l0={100};
+    world[1].l0={100};
+
     bool running = true;
     SDL_Event event;
 

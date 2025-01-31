@@ -15,6 +15,9 @@
 const int windowWidth = 800;
 const int windowHeight = 600;
 
+float distance_max=400;
+float distance_min=10;
+
 class Goo {
 public:
     float x, y;  // Position
@@ -23,33 +26,42 @@ public:
     float d_min = 100;
     float m=0.4;
     float g=9.81/20;
-    float k=100;
-    std::vector<Goo> neighbors;
+    float k=0.001;
+
+    std::vector<Goo*> neighbors;
     std::vector<float> l0;
-    
-    float distance(Goo A) {
-        return (std::pow((x-A.x),2)+std::pow((y-A.y),2));
+
+
+    float distance(Goo* A) {
+        std::cout<<sqrt(std::pow((x-(*A).x),2)+std::pow((y-(*A).y),2))<<std::endl;
+        return sqrt(std::pow((x-(*A).x),2)+std::pow((y-(*A).y),2));
     }
-    
+
     Goo(float x, float y, float vx, float vy) : x(x), y(y), vx(vx), vy(vy) {}
-    
+
     void update() {
-        x=x+vx;
-        y=y+vy;
-        
+        float dt=1;
+        x=x+vx*dt;
+        y=y+vy*dt;
+
         float force_x=0;
         float force_y=g;
         for (int i=0;i<neighbors.size();i++) {
-            Goo A=neighbors[i];
-            
-            float theta=std::atan((A.y-y)/(A.x-x));
+            Goo* A=neighbors[i];
+            //float theta=std::atan((A.y-y)/(A.x-x));
             float l_0=l0[i];
-            if (A.x<x) {theta=theta+3.14159;}
-            force_x=force_x+k/m*(distance(A)-l_0)*std::cos(theta);
-            force_y=force_y+k/m*(distance(A)-l_0)*std::sin(theta);
+            //if (A.x<x) {theta=theta+3.14159;}
+            if (distance(A)<distance_max and distance(A)>distance_min) {
+                force_x=force_x+k/m*(distance(A)-l_0)*((*A).x-x)/distance(A);
+                force_y=force_y+k/m*(distance(A)-l_0)*((*A).y-y)/distance(A);
             }
-        vx=vx+force_x;
-        vy=vy+force_y;
+            else if (distance(A)<distance_min) {
+                force_x=force_x+k/m*(distance(A)-l_0)*((*A).x-x)/distance_min;
+                force_y=force_y+k/m*(distance(A)-l_0)*((*A).y-y)/distance_min;
+            }
+        }
+        vx=vx+force_x*dt;
+        vy=vy+force_y*dt;
         // Rebondir sur les bords
         if (x < 0 || x > windowWidth) {
             vx = -vx; // Inverser la vitesse horizontale
