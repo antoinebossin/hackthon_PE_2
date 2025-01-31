@@ -36,8 +36,12 @@ int main(int argc, char* argv[]) {
         return -1;
     }
 
-    // Création d'un Goo
-    Goo goo(400, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
+    // Création du world
+    std::vector<Goo> world;
+    Goo goo1(450, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
+    world.push_back(goo1);
+    Goo goo2(350, 200, -1, 1);
+    world.push_back(goo2);
     
     bool running = true;
     SDL_Event event;
@@ -50,15 +54,19 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        // Mise à jour de la position de l'oiseau
-        goo.update();
+        // Mise à jour de la position des goos
+        for (size_t i = 0; i < world.size(); ++i) {
+            world[i].update();
+        }
 
         // Effacer l'écran avec un fond noir
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255); // Noir
         SDL_RenderClear(renderer);
 
-        // Affichage de l'oiseau
-        goo.render(renderer);
+        // Affichage des Goos
+        for (size_t i = 0; i < world.size(); ++i) {
+            world[i].render(renderer);
+        }
 
         // Afficher le rendu à l'écran
         SDL_RenderPresent(renderer);
