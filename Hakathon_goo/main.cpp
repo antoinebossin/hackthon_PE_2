@@ -38,16 +38,18 @@ int main(int argc, char* argv[]) {
 
     // Création du world
     std::vector<Goo> world;
-    Goo goo1(250, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
-    Goo goo2(350, 200, -1, 1);
-    Goo goo3(100,400,0.5,-1);
-    world.push_back(goo1);
-    world.push_back(goo2);
-    world.push_back(goo3);
-    world[0].neighbors={&(world[1])};
-    world[1].neighbors={&(world[0])};
-    world[0].l0={100};
-    world[1].l0={100};
+    //Goo goo1(250, 200, 1, 1); /* plage de vitesse = [ - 2, +2 ] */
+    //Goo goo2(350, 200, -1, 1);
+    //Goo goo3(270,250,0.5,-1);
+    //world.push_back(goo1);
+    //world.push_back(goo2);
+    //world.push_back(goo3);
+    //world[0].neighbors={&(world[1]),&(world[2])};
+    //world[1].neighbors={&(world[0]),&(world[2])};
+    //world[2].neighbors={&(world[0]),&(world[1])};
+    //world[0].l0={100,sqrt(400+2500)};
+    //world[1].l0={100,sqrt(4900+2500)};
+    //world[2].l0={sqrt(400+2500),sqrt(4900+2500)};
 
     bool running = true;
     SDL_Event event;
@@ -57,6 +59,19 @@ int main(int argc, char* argv[]) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
+            }
+            if (event.type == SDL_MOUSEBUTTONDOWN) {
+                int x,y;
+                SDL_GetMouseState(&x,&y);
+                Goo goo11(x,y,1,1);
+                world.push_back(goo11);
+                int n=world.size()-1;
+                for (int i=0;i<world.size()-1;i++) {
+                    (world[i].neighbors).push_back(&world[world.size()-1]);
+                    (world[i].l0).push_back(goo11.distance(&world[i]));
+                    (world[n].neighbors).push_back(&world[i]);
+                    (world[n].l0).push_back(goo11.distance(&world[i]));
+                }
             }
         }
 

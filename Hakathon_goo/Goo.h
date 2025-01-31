@@ -33,7 +33,6 @@ public:
 
 
     float distance(Goo* A) {
-        std::cout<<sqrt(std::pow((x-(*A).x),2)+std::pow((y-(*A).y),2))<<std::endl;
         return sqrt(std::pow((x-(*A).x),2)+std::pow((y-(*A).y),2));
     }
 
